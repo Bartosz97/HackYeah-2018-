@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20181124174308_InitialMigrationsForeignKeys.cs" />
+    <Compile Remove="Migrations\20181124174308_InitialMigrationsForeignKeys.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

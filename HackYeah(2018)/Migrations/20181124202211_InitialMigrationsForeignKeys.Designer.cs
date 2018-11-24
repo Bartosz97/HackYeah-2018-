@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HackYeah2018.Migrations
 {
     [DbContext(typeof(HackContext))]
-    [Migration("20181124174308_InitialMigrationsForeignKeys")]
+    [Migration("20181124202211_InitialMigrationsForeignKeys")]
     partial class InitialMigrationsForeignKeys
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,9 +29,13 @@ namespace HackYeah2018.Migrations
 
                     b.Property<DateTime>("Date");
 
+                    b.Property<int>("RankTicketId");
+
                     b.Property<int>("RankUserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RankTicketId");
 
                     b.HasIndex("RankUserId")
                         .IsUnique();
@@ -51,14 +55,9 @@ namespace HackYeah2018.Migrations
 
                     b.Property<float>("Length");
 
-                    b.Property<int>("TicketRankId");
-
                     b.Property<int?>("UserId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TicketRankId")
-                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -82,6 +81,11 @@ namespace HackYeah2018.Migrations
 
             modelBuilder.Entity("HackYeah_2018_.Models.Rank", b =>
                 {
+                    b.HasOne("HackYeah_2018_.Models.Ticket", "Ticket")
+                        .WithMany()
+                        .HasForeignKey("RankTicketId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("HackYeah_2018_.Models.User", "User")
                         .WithOne("Rank")
                         .HasForeignKey("HackYeah_2018_.Models.Rank", "RankUserId")
@@ -90,11 +94,6 @@ namespace HackYeah2018.Migrations
 
             modelBuilder.Entity("HackYeah_2018_.Models.Ticket", b =>
                 {
-                    b.HasOne("HackYeah_2018_.Models.Rank", "Rank")
-                        .WithOne("Ticket")
-                        .HasForeignKey("HackYeah_2018_.Models.Ticket", "TicketRankId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("HackYeah_2018_.Models.User", "User")
                         .WithMany("Tickets")
                         .HasForeignKey("UserId");

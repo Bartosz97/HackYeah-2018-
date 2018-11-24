@@ -12,6 +12,8 @@ namespace HackYeah_2018_.Models
     {
         [Key]
         public int Id { get; set; }
+        [ForeignKey("Ticket")]
+        public int RankTicketId { get; set; }
         public virtual Ticket Ticket { get; set; }
         [ForeignKey("User")]
         public int RankUserId { get; set; }
