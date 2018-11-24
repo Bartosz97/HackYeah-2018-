@@ -6,51 +6,121 @@ using HackYeah_2018_.Interfaces;
 using HackYeah_2018_.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 
 namespace HackYeah_2018_.Controllers
 {
-    [Route("api/Ticket")]
-    public class TicketController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class TicketController : ControllerBase
     {
-        private readonly ITicketService _ticketService;
-        public TicketController(ITicketService ticketService)
+        private readonly HackContext _context;
+
+        public TicketController(HackContext context)
         {
-            _ticketService = ticketService;
+            _context = context;
         }
 
+        // GET: api/TicketController
         [HttpGet]
-        public IActionResult GetTickets()
+        public IEnumerable<Ticket> GetTickets()
         {
-            var response = _ticketService.GetTickets();
-
-            if (response == null)
-            {
-                return NotFound();
-            }
-            return Ok(response);
+            return _context.Tickets;
         }
 
+        // GET: api/TicketController/5
         [HttpGet("{id}")]
-        public IActionResult GetTicketById(long id)
-        {
-            var response = _ticketService.GetTicketById(id);
-
-            if (response == null)
-            {
-                return NotFound();
-            }
-            return Ok(response);
-        }
-        [HttpPut]
-        public IActionResult AddTicket([FromBody] Ticket addTicket)
+        public async Task<IActionResult> GetTicket([FromRoute] int id)
         {
             if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var ticket = await _context.Tickets.FindAsync(id);
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(ticket);
+        }
+
+        // PUT: api/TicketController/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTicket([FromRoute] int id, [FromBody] Ticket ticket)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != ticket.Id)
             {
                 return BadRequest();
             }
 
-            var result = _ticketService.AddTicket(addTicket);
-            return Ok(result);
+            _context.Entry(ticket).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TicketExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // POST: api/TicketController
+        [HttpPost]
+        public async Task<IActionResult> PostTicket([FromBody] Ticket ticket)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _context.Tickets.Add(ticket);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetTicket", new { id = ticket.Id }, ticket);
+        }
+
+        // DELETE: api/TicketController/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTicket([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var ticket = await _context.Tickets.FindAsync(id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            _context.Tickets.Remove(ticket);
+            await _context.SaveChangesAsync();
+
+            return Ok(ticket);
+        }
+
+        private bool TicketExists(int id)
+        {
+            return _context.Tickets.Any(e => e.Id == id);
         }
     }
 }

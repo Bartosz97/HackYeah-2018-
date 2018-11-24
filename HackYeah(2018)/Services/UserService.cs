@@ -28,7 +28,7 @@ namespace HackYeah_2018_.Services
             return null;
         }
 
-        public User GetUserById(long id)
+        public User GetUserById(int id)
         {
             throw new NotImplementedException();
         }

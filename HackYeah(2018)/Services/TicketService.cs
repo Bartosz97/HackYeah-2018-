@@ -19,7 +19,7 @@ namespace HackYeah_2018_.Services
             throw new NotImplementedException();
         }
 
-        public Ticket GetTicketById(long id)
+        public Ticket GetTicketById(int id)
         {
             throw new NotImplementedException();
         }

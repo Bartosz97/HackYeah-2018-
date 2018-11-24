@@ -11,7 +11,7 @@ namespace HackYeah_2018_.Interfaces
         // w przyszłości możliwość rozbudowy o inne metody
         User GetUser();
 
-        User GetUserById(long id);
+        User GetUserById(int id);
 
         User CreateUser(User createUser);
 

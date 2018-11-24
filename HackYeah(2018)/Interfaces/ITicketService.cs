@@ -10,6 +10,6 @@ namespace HackYeah_2018_.Interfaces
     {
         Ticket GetTickets();
         Ticket AddTicket(Ticket addTicket);
-        Ticket GetTicketById(long id);
+        Ticket GetTicketById(int id);
     }
 }

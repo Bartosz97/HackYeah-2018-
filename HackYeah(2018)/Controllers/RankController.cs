@@ -3,29 +3,124 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HackYeah_2018_.Interfaces;
+using HackYeah_2018_.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HackYeah_2018_.Controllers
 {
-    [Route("api/Rank")]
-    public class RankController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class RankController : ControllerBase
     {
-        private readonly IRankService _rankService;
-        public RankController(IRankService rankService)
+        private readonly HackContext _context;
+
+        public RankController(HackContext context)
         {
-            _rankService = rankService;
+            _context = context;
         }
 
+        // GET: api/RankController
         [HttpGet]
-        public IActionResult GetRank()
+        public IEnumerable<Rank> GetRanks()
         {
-            var response = _rankService.GetRank();
+            return _context.Ranks;
+        }
 
-            if (response == null)
+        // GET: api/RankController/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetRank([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var rank = await _context.Ranks.FindAsync(id);
+
+            if (rank == null)
             {
                 return NotFound();
             }
-            return Ok(response);
+
+            return Ok(rank);
+        }
+
+        // PUT: api/RankController/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutRank([FromRoute] int id, [FromBody] Rank rank)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != rank.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(rank).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RankExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // POST: api/RankController
+        [HttpPost]
+        public async Task<IActionResult> PostRank([FromBody] Rank rank)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _context.Ranks.Add(rank);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetRank", new {id = rank.Id}, rank);
+        }
+
+        // DELETE: api/RankController/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRank([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var rank = await _context.Ranks.FindAsync(id);
+            if (rank == null)
+            {
+                return NotFound();
+            }
+
+            _context.Ranks.Remove(rank);
+            await _context.SaveChangesAsync();
+
+            return Ok(rank);
+        }
+
+        private bool RankExists(int id)
+        {
+            return _context.Ranks.Any(e => e.Id == id);
         }
     }
 }
+   
