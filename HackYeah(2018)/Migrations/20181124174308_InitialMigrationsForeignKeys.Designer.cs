@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HackYeah2018.Migrations
 {
     [DbContext(typeof(HackContext))]
-    [Migration("20181124153103_InitialMigrations")]
-    partial class InitialMigrations
+    [Migration("20181124174308_InitialMigrationsForeignKeys")]
+    partial class InitialMigrationsForeignKeys
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,28 +23,25 @@ namespace HackYeah2018.Migrations
 
             modelBuilder.Entity("HackYeah_2018_.Models.Rank", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<long?>("TicketId");
-
-                    b.Property<long?>("UserId");
+                    b.Property<int>("RankUserId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TicketId");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("RankUserId")
+                        .IsUnique();
 
                     b.ToTable("Ranks");
                 });
 
             modelBuilder.Entity("HackYeah_2018_.Models.Ticket", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -54,9 +51,14 @@ namespace HackYeah2018.Migrations
 
                     b.Property<float>("Length");
 
-                    b.Property<long?>("UserId");
+                    b.Property<int>("TicketRankId");
+
+                    b.Property<int?>("UserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TicketRankId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -65,7 +67,7 @@ namespace HackYeah2018.Migrations
 
             modelBuilder.Entity("HackYeah_2018_.Models.User", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -80,19 +82,21 @@ namespace HackYeah2018.Migrations
 
             modelBuilder.Entity("HackYeah_2018_.Models.Rank", b =>
                 {
-                    b.HasOne("HackYeah_2018_.Models.Ticket", "Ticket")
-                        .WithMany()
-                        .HasForeignKey("TicketId");
-
                     b.HasOne("HackYeah_2018_.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithOne("Rank")
+                        .HasForeignKey("HackYeah_2018_.Models.Rank", "RankUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("HackYeah_2018_.Models.Ticket", b =>
                 {
+                    b.HasOne("HackYeah_2018_.Models.Rank", "Rank")
+                        .WithOne("Ticket")
+                        .HasForeignKey("HackYeah_2018_.Models.Ticket", "TicketRankId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("HackYeah_2018_.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Tickets")
                         .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HackYeah2018.Migrations
 {
-    public partial class InitialMigrations : Migration
+    public partial class InitialMigrationsForeignKeys : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,7 @@ namespace HackYeah2018.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Number = table.Column<long>(nullable: false),
                     Name = table.Column<string>(nullable: true)
@@ -23,12 +23,33 @@ namespace HackYeah2018.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Ranks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    RankUserId = table.Column<int>(nullable: false),
+                    Date = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ranks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ranks_Users_RankUserId",
+                        column: x => x.RankUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tickets",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<long>(nullable: true),
+                    TicketRankId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: true),
                     Latitude = table.Column<float>(nullable: false),
                     Length = table.Column<float>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false)
@@ -37,6 +58,12 @@ namespace HackYeah2018.Migrations
                 {
                     table.PrimaryKey("PK_Tickets", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Tickets_Ranks_TicketRankId",
+                        column: x => x.TicketRankId,
+                        principalTable: "Ranks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Tickets_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
@@ -44,42 +71,17 @@ namespace HackYeah2018.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Ranks",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<long>(nullable: true),
-                    TicketId = table.Column<long>(nullable: true),
-                    Date = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ranks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ranks_Tickets_TicketId",
-                        column: x => x.TicketId,
-                        principalTable: "Tickets",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Ranks_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_Ranks_RankUserId",
+                table: "Ranks",
+                column: "RankUserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ranks_TicketId",
-                table: "Ranks",
-                column: "TicketId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Ranks_UserId",
-                table: "Ranks",
-                column: "UserId");
+                name: "IX_Tickets_TicketRankId",
+                table: "Tickets",
+                column: "TicketRankId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_UserId",
@@ -90,10 +92,10 @@ namespace HackYeah2018.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Ranks");
+                name: "Tickets");
 
             migrationBuilder.DropTable(
-                name: "Tickets");
+                name: "Ranks");
 
             migrationBuilder.DropTable(
                 name: "Users");
