@@ -9,5 +9,6 @@ namespace HackYeah_2018_.Models
     {
         public long Id { get; set; }
         public long Number { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HackYeah2018.Migrations
 {
     [DbContext(typeof(HackContext))]
-    [Migration("20181124143846_InitialMigrations")]
+    [Migration("20181124153103_InitialMigrations")]
     partial class InitialMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,6 +68,8 @@ namespace HackYeah2018.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name");
 
                     b.Property<long>("Number");
 

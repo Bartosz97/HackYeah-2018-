@@ -67,6 +67,8 @@ namespace HackYeah2018.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Name");
+
                     b.Property<long>("Number");
 
                     b.HasKey("Id");
