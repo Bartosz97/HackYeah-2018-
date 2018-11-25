@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HackYeah_2018_.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("/api/[controller]")]
     [ApiController]
     public class TicketController : ControllerBase
     {

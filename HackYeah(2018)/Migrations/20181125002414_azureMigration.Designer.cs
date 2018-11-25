@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HackYeah2018.Migrations
 {
     [DbContext(typeof(HackContext))]
-    [Migration("20181124202211_InitialMigrationsForeignKeys")]
-    partial class InitialMigrationsForeignKeys
+    [Migration("20181125002414_azureMigration")]
+    partial class azureMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

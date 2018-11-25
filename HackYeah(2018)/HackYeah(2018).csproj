@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20181124174308_InitialMigrationsForeignKeys.cs" />
     <Compile Remove="Migrations\20181124174308_InitialMigrationsForeignKeys.Designer.cs" />
+    <Compile Remove="Migrations\20181124202211_InitialMigrationsForeignKeys.cs" />
+    <Compile Remove="Migrations\20181124202211_InitialMigrationsForeignKeys.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

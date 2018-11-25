@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HackYeah2018.Migrations
 {
-    public partial class InitialMigrationsForeignKeys : Migration
+    public partial class azureMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
